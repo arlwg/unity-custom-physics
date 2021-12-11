@@ -39,7 +39,7 @@ public class UIController : Physics_Object
     public Physics_Object objectV;
     public List<Physics_Object> physicsObjects = new List<Physics_Object>();
 
-    private Vector3 StartPosition = new Vector3(-8.48000002f, 10.76999998f, -6.6100006f);
+    private Vector3 StartPosition = new Vector3(-8.48000002f, 8.76999998f, -6.6100006f);
     // Start is called before the first frame update
     void Start()
     {
@@ -105,7 +105,7 @@ public class UIController : Physics_Object
         activeObject.transform.SetPositionAndRotation(this.StartPosition, this.activeObject.transform.rotation) ;
         this.objectV = activeObject.GetComponent<Physics_Object>();
 
-        this.objectV.velocity = new Vector3(0, 0, 5);
+        this.objectV.velocity = new Vector3(0, 0, 15);
     }
     public void BowlingBall()
     {
@@ -114,7 +114,7 @@ public class UIController : Physics_Object
         activeObject.transform.SetPositionAndRotation(this.StartPosition, this.activeObject.transform.rotation) ;
         this.objectV = activeObject.GetComponent<Physics_Object>();
 
-        this.objectV.velocity = new Vector3(0, 0, 5);
+        this.objectV.velocity = new Vector3(0, 0, 15);
     }
     public void Baseball()
     {
@@ -123,7 +123,7 @@ public class UIController : Physics_Object
         activeObject.transform.SetPositionAndRotation(this.StartPosition, this.activeObject.transform.rotation) ;
         this.objectV = activeObject.GetComponent<Physics_Object>();
 
-        this.objectV.velocity = new Vector3(0, 0, 5);
+        this.objectV.velocity = new Vector3(0, 0, 15);
     }
     public void Basketball()
     {
@@ -132,7 +132,7 @@ public class UIController : Physics_Object
         activeObject.transform.SetPositionAndRotation(this.StartPosition, this.activeObject.transform.rotation) ;
         this.objectV = activeObject.GetComponent<Physics_Object>();
 
-        this.objectV.velocity = new Vector3(0, 0, 5);
+        this.objectV.velocity = new Vector3(0, 0, 15);
     }
 
     public void ResetBlocks()
@@ -158,16 +158,16 @@ public class UIController : Physics_Object
        this.objectV = GameObject.Find("WoodenBlock5").GetComponent<Physics_Object>();
        this.objectV.velocity = Vector3.zero;
        GameObject.Find("Ping Pong Ball").transform.position = this.pingpong;
-       this.objectV = GameObject.Find("WoodenBlock5").GetComponent<Physics_Object>();
+       this.objectV = GameObject.Find("Ping Pong Ball").GetComponent<Physics_Object>();
        this.objectV.velocity = Vector3.zero;
        GameObject.Find("Baseball").transform.position = this.baseball;
-       this.objectV = GameObject.Find("WoodenBlock5").GetComponent<Physics_Object>();
+       this.objectV = GameObject.Find("Baseball").GetComponent<Physics_Object>();
        this.objectV.velocity = Vector3.zero;
        GameObject.Find("Basketball").transform.position = this.basketball;
-       this.objectV = GameObject.Find("WoodenBlock5").GetComponent<Physics_Object>();
+       this.objectV = GameObject.Find("Basketball").GetComponent<Physics_Object>();
        this.objectV.velocity = Vector3.zero;
        GameObject.Find("Bowling Ball").transform.position = this.bowlingball;
-       this.objectV = GameObject.Find("WoodenBlock5").GetComponent<Physics_Object>();
+       this.objectV = GameObject.Find("Bowling Ball").GetComponent<Physics_Object>();
        this.objectV.velocity = Vector3.zero;
     }
 
