@@ -267,60 +267,41 @@ public class Physics_System : MonoBehaviour
     {
 
 
-        Vector3 halfSizeB = b.GetHalfSize();
-        Vector3 displacementAB = b.transform.position - a.transform.position;
-        // Find the length of these projections along each axis
-        // Compare the distance between them along each axis with half of their siSizeze.x - displacementAB.x)) in that axis
-        float penetrationX = (a.radius + halfSizeB.x - Mathf.Abs(displacementAB.x));
-        float penetrationY = (a.radius + halfSizeB.y - Mathf.Abs(displacementAB.y));
-        float penetrationZ = (a.radius + halfSizeB.z - Mathf.Abs(displacementAB.z));
+        Vector3 displacement = b.transform.position - a.transform.position;
+        Vector3 penetration = new Vector3();
+        penetration.x = (b.GetHalfSize().x + a.radius - Mathf.Abs(displacement.x));
+        penetration.y = (b.GetHalfSize().y + a.radius - Mathf.Abs(displacement.y));
+        penetration.z = (b.GetHalfSize().z + a.radius - Mathf.Abs(displacement.z));
 
-        // If distance is not greater than the sum of the two spheres, we are colliding.
-       
-        if (penetrationX < 0 || penetrationY < 0 || penetrationZ < 0)
+        if (penetration.x < 0 || penetration.y < 0 || penetration.z < 0)
         {
-            return; // no collision
-        }
-         
-        // The minimum translation neccessary to push the object back.
-        Vector3 normal = new Vector3(Mathf.Sign(displacementAB.x), 0, 0);
-        Vector3 minimumTranslationVectorForA = normal * penetrationX;;
-        
-        // Find the shortest penetration to move along
-        if (penetrationY < penetrationX && penetrationY < penetrationZ) // is X the shortest?
-        {
-            normal = new Vector3(0, Mathf.Sign(displacementAB.y), 0);
-            minimumTranslationVectorForA = normal * penetrationY;
-        }
-        else if (penetrationZ < penetrationY && penetrationZ < penetrationY) // is X the shortest?
-        {
-            normal = new Vector3(0, 0, Mathf.Sign(displacementAB.z));
-            minimumTranslationVectorForA = normal * penetrationZ;
+            return; // No collision
         }
 
-        bool isOverlapping = (penetrationZ > 0 || penetrationX > 0 || penetrationY > 0);
-        //Collision response.
-        if (isOverlapping)
+        Vector3 normal = new Vector3();
+        Vector3 minTranslationVectorForA = new Vector3();
+
+        if (penetration.x <= penetration.y && penetration.x <= penetration.z)
         {
-            Debug.Log(a.name + ("Collided with : ") + b.name);
-
-            Color colorA =  a.GetComponent<Renderer>().material.color;
-            Color colorB =  b.GetComponent<Renderer>().material.color;
-            
-            a.GetComponent<Renderer>().material.color = Color.Lerp(colorA, colorB, 0.05f);
-            b.GetComponent<Renderer>().material.color = Color.Lerp(colorB, colorA, 0.05f);
-           
-
+            normal = new Vector3(Mathf.Sign(displacement.x), 0, 0);
+            minTranslationVectorForA = normal * penetration.x;
         }
-        else
+        else if (penetration.y <= penetration.x && penetration.y <= penetration.z)
         {
-            return;
+            normal = new Vector3(0, Mathf.Sign(displacement.y), 0);
+            minTranslationVectorForA = normal * penetration.y;
+        }
+        else if (penetration.z <= penetration.x && penetration.z <= penetration.y)
+        {
+            normal = new Vector3(0, 0, Mathf.Sign(displacement.z));
+            minTranslationVectorForA = normal * penetration.z;
         }
 
-        Vector3 contactPoint = a.transform.position + minimumTranslationVectorForA;
-        ApplyMinimumTranslationVector(a.kinematicsObject, b.kinematicsObject, minimumTranslationVectorForA, contactPoint, normal);
-
+        Vector3 contactPoint = a.transform.position + minTranslationVectorForA;
+        ApplyMinimumTranslationVector(a.kinematicsObject, b.kinematicsObject, minTranslationVectorForA, contactPoint, normal);
     }
+
+    
     void ApplyMinimumTranslationVector(Physics_Object a, Physics_Object b, Vector3 minimumTranslationVectorForA, Vector3 contactPoint, Vector3 normal)
     {
         ////---------------IF IS STILL OVERLAPPING-------------------------
@@ -493,25 +474,16 @@ public class Physics_System : MonoBehaviour
         Vector3 directionofFriction = relativeSurfaceVelocity / relativeSpeed;
 
         float gravityDotNormal;
+        gravityDotNormal = -Vector3.Dot(this.gravity, collision.collisionNormalAtoB);
 
-        if (a.shape.GetCollisionShape() == CollisionShape.Sphere && b.shape.GetCollisionShape() == CollisionShape.Plane || b.shape.GetCollisionShape() == CollisionShape.Sphere && a.shape.GetCollisionShape() == CollisionShape.Plane)
-        {
-           gravityDotNormal = Vector3.Dot(this.gravity, collision.collisionNormalAtoB);
-        }
-        else
-        {
-            gravityDotNormal = -Vector3.Dot(this.gravity, collision.collisionNormalAtoB);
-        }
-        
-       
-  
-        Vector3 accelerationFriction = (gravityDotNormal * kFrictionCoefficient * directionofFriction);
+
+
+        Vector3 accelerationFriction = -(gravityDotNormal * kFrictionCoefficient * directionofFriction);
         // Apply frictional force to objects ( take into account "lock position" ) 
 
-        //Technically not correct for all cases, but will look ok.
         if (!a.lockPosition)
         {
-            a.velocity -= accelerationFriction * Time.fixedDeltaTime;
+            a.velocity += accelerationFriction * Time.fixedDeltaTime;
         }
 
         if (!b.lockPosition)
