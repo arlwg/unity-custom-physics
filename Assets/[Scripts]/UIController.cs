@@ -16,7 +16,6 @@ public class UIController : Physics_Object
     public GameObject panel;
     public Toggle gravityCheckBox;
     public Slider gravityScaleSlider;
-    public InputField gravityScaleInputField;
 
     public GameObject activeObject;
 
@@ -44,10 +43,8 @@ public class UIController : Physics_Object
     void Start()
     {
         panel.SetActive(false);
-
+        
         Cursor.lockState = CursorLockMode.Locked;
-
-        gravityScaleInputField.text = gravityScaleSlider.value.ToString();
 
         this.startPos1 = GameObject.Find("WoodenBlock").transform.position;
         this.startPos2 = GameObject.Find("WoodenBlock1").transform.position;
@@ -85,16 +82,6 @@ public class UIController : Physics_Object
     {
         Debug.Log(gravityCheckBox.isOn ? "Gravity is On" : "Gravity is Off");
 
-    }
-
-    public void OnGravityScaleSliderValueChanged()
-    {
-     
-    }
-
-    public void OnGravityScaleTextFieldValueChanged()
-    {
-        gravityScaleSlider.value = Single.TryParse(gravityScaleInputField.text, out var number) ? number : 0.0f;
     }
 
     public void PingPongBall()

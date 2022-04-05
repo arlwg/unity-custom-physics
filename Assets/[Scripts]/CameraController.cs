@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CameraController : MonoBehaviour
 {
@@ -28,12 +29,16 @@ public class CameraController : MonoBehaviour
     void Update()
     {
 
-        this.MouseLook();
-           
-            Move();
+        Move();
 
-           
+        if (Input.GetMouseButton(1))
+        {
+            MouseLook();
+        }
         
+
+
+
     }
 
     private void Move()

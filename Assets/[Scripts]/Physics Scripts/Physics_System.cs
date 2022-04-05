@@ -1,14 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class Physics_System : MonoBehaviour
 {
 
 
     public Vector3 gravity = new Vector3(0, -9.81f, 0);
+    private bool _gravityenabled = true;
     public float globalGravityScale = 1;
     public List<Physics_Object> physicsObjects = new List<Physics_Object>();
+    [SerializeField]
+    public Slider GravitySlider;
+    [SerializeField]
+    public Toggle GravityToggle;
+    public 
     // Start is called before the first frame update
     void Start()
     {
@@ -18,14 +24,16 @@ public class Physics_System : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-       
+
+        globalGravityScale = GravitySlider.value;
+        _gravityenabled = GravityToggle;
         //Velocity
         foreach(Physics_Object obj in physicsObjects)
         {
             if (!obj.lockPosition)
             {
                 //If the object isn't colliding, accelerate it by gravity (Free-Fall)
-                if (!obj.gravityLock)
+                if (!obj.gravityLock && _gravityenabled)
                 {
                     obj.velocity += (gravity * (obj.gravityScale * globalGravityScale * Time.deltaTime)) ;
                 }
@@ -47,6 +55,10 @@ public class Physics_System : MonoBehaviour
        CollisionUpdate();
     }
 
+    bool EnableGravity()
+    {
+        return !_gravityenabled;
+    }
 
      void getLocked(Physics_Object a, Physics_Object b, out float movementScalarA, out float movementScalarB)
     {
@@ -237,28 +249,32 @@ public class Physics_System : MonoBehaviour
          
          // The minimum translation neccessary to push the object back.
          Vector3 normal = new Vector3(Mathf.Sign(displacementAB.x), 0, 0);
-         Vector3 minimumTranslationVectorForA = normal * penetrationX;;
+         Vector3 minimumTranslationVector = normal * penetrationX;;
         
        
          // Find the shortest penetration to move along
-        
-         if (penetrationY < penetrationX && penetrationY < penetrationZ) // is X the shortest?
+         if (penetrationX < penetrationY && penetrationX < penetrationZ) // is penX the shortest?
          {
-             normal = new Vector3(0, Mathf.Sign(displacementAB.y), 0);
-             minimumTranslationVectorForA = normal * penetrationY;
+             normal = new Vector3(Mathf.Sign(displacementAB.x),0, 0);
+             minimumTranslationVector = normal * penetrationX;
          }
-         else if (penetrationZ < penetrationY && penetrationZ < penetrationY) // is X the shortest?
+         else if (penetrationY < penetrationX && penetrationY < penetrationZ) // is penY the shortest?
          {
-             normal = new Vector3(0, 0, Mathf.Sign(displacementAB.z));
-             minimumTranslationVectorForA = normal * penetrationZ;
+             normal = new Vector3(0,Mathf.Sign(displacementAB.y), 0);
+             minimumTranslationVector = normal * penetrationY;
+         }
+         else //if (penetrationZ < penetrationY && penetrationZ < penetrationX) // is penZ the shortest?   // could just be else
+         {
+             normal = new Vector3(0,0, Mathf.Sign(displacementAB.z));
+             minimumTranslationVector = normal * penetrationZ;
          }
 
-         Vector3 contactPoint = objectAShape.transform.position + minimumTranslationVectorForA;
+         Vector3 contactPoint = objectAShape.transform.position + minimumTranslationVector;
 
          // Find the minimum translation vector to move them
          // Apply displacement to separate them along the shortest path we can
          // Apply minimum translation, call other functions such as elasticity and friction.
-         ApplyMinimumTranslationVector(objectAShape.kinematicsObject, objectBShape.kinematicsObject, minimumTranslationVectorForA, contactPoint, normal);
+         ApplyMinimumTranslationVector(objectAShape.kinematicsObject, objectBShape.kinematicsObject, minimumTranslationVector, contactPoint, normal);
 
     }
 
