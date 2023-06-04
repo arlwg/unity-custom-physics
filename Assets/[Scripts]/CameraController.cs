@@ -31,10 +31,7 @@ public class CameraController : MonoBehaviour
 
         Move();
 
-        if (Input.GetMouseButton(1))
-        {
-            MouseLook();
-        }
+        
         
 
 

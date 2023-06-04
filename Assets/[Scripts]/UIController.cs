@@ -14,8 +14,6 @@ public class UIController : Physics_Object
 {
     [Header("UI Controls")]
     public GameObject panel;
-    public Toggle gravityCheckBox;
-    public Slider gravityScaleSlider;
 
     public GameObject activeObject;
 
@@ -42,9 +40,9 @@ public class UIController : Physics_Object
     // Start is called before the first frame update
     void Start()
     {
-        panel.SetActive(false);
+        //panel.SetActive(false);
         
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.;
 
         this.startPos1 = GameObject.Find("WoodenBlock").transform.position;
         this.startPos2 = GameObject.Find("WoodenBlock1").transform.position;
@@ -64,9 +62,17 @@ public class UIController : Physics_Object
     {
         if (Input.GetKeyDown(KeyCode.BackQuote))
         {
-            panel.SetActive(!panel.activeInHierarchy); // toggle
-
-            Cursor.lockState = (panel.activeInHierarchy) ? CursorLockMode.None : CursorLockMode.Locked;
+            if(panel.gameObject.activeInHierarchy == false)
+            {
+                panel.gameObject.SetActive(true);
+            }
+            else
+            {
+                panel.gameObject.SetActive(false);
+            }
+            //panel.SetActive(!panel.activeInHierarchy); // toggle
+    
+            //Cursor.lockState = (panel.activeInHierarchy) ? CursorLockMode.None : CursorLockMode.Locked;
         }
 
     }
@@ -77,12 +83,7 @@ public class UIController : Physics_Object
 
         Cursor.lockState = CursorLockMode.Locked;
     }
-
-    public void OnGravityToggled()
-    {
-        Debug.Log(gravityCheckBox.isOn ? "Gravity is On" : "Gravity is Off");
-
-    }
+    
 
     public void PingPongBall()
     {

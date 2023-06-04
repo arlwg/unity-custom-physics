@@ -10,10 +10,6 @@ public class Physics_System : MonoBehaviour
     private bool _gravityenabled = true;
     public float globalGravityScale = 1;
     public List<Physics_Object> physicsObjects = new List<Physics_Object>();
-    [SerializeField]
-    public Slider GravitySlider;
-    [SerializeField]
-    public Toggle GravityToggle;
     public 
     // Start is called before the first frame update
     void Start()
@@ -24,9 +20,7 @@ public class Physics_System : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-
-        globalGravityScale = GravitySlider.value;
-        _gravityenabled = GravityToggle;
+        
         //Velocity
         foreach(Physics_Object obj in physicsObjects)
         {
